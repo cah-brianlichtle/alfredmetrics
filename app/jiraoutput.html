@@ -75,7 +75,7 @@
             		<td class="cardKeyName">Type</td>
             		<td>{{ jiraCard.type }}</td>            	
             		<td class="cardKeyName">Status</td>
-            		<td>{{ jiraCard.status }}</td>            	
+            		<td>Accepted</td>
             	</tr>
             </table>
             <div class="bottomDivider">&nbsp</div>
@@ -88,7 +88,7 @@
 		$scope.appObj = {};
 		$scope.appObj.title = "JIRA Card Details";
 
-		$http.get('jiraoutput.json').success(function(data) {
+		$http.get('DisplayNamesByCardNumber.json').success(function(data) {
 		   $scope.appObj.jiraCardArray = angular.fromJson(data);
 		});
 	});
