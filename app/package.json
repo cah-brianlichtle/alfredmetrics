@@ -1,0 +1,19 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "prestart": "npm install",
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "async": "^2.1.4",
+    "file-system": "^2.2.2",
+    "node-rest-client": "^2.0.1",
+    "sync-request": "^4.0.1",
+    "underscore": "^1.8.3"
+  }
+}
