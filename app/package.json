@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "prestart": "npm install",
-    "start": "node index.js"
+    "start": "sh startServer.sh"
   },
   "author": "",
   "license": "ISC",
