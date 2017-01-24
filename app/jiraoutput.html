@@ -1,0 +1,97 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <style type="text/css">
+  	body {
+  		font-family: Verdana, Tahoma, Geneva, sans-serif;
+  		font-size: 1.8vw;
+        line-height: 1.8vw;
+        color: black;
+  		background-color: white;
+	}
+	table {
+    	border-collapse: collapse;
+	}
+	table, th, td {
+    	border: 2px solid black;
+	}
+	td {
+		padding: 10px;
+		min-width: 20vw;
+	}
+	.title {
+		text-align: center;
+		font-size: 2.0vw;
+		line-height: 2.0vw;
+	}
+	.cardKeyName {
+		font-weight: bold;
+	}
+	.summary {
+		font-weight: normal;
+		padding-bottom: 5px;
+		padding-top: 5px;
+	}
+	.bottomDivider {
+		padding-top: 20px;
+	}
+  </style>
+
+  <title>JIRA Output</title>
+  <meta name="description" content="JIRA Output">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+  <![endif]-->
+</head>
+
+<body ng-app="jiraModule">
+
+	<div ng-controller="JiraController" >
+		<h1 class="title">{{ appObj.title }}</h1>
+
+	     <div ng-repeat='jiraCard in appObj.jiraCardArray'> <!-- Copy HTML inside div once for every element in array making available a property named item -->
+            <div class="cardKeyName">{{ jiraCard.key }}</div>
+            <div class="summary">{{ jiraCard.summary }}</div>
+            <table>
+            	<tr>
+            		<td class="cardKeyName">Assignee</td>
+            		<td>{{ jiraCard.assignee }}</td>
+            		<td class="cardKeyName">Developer Pair</td>
+            		<td>{{ jiraCard.developerPair }}</td>
+            	</tr>
+            	<tr>
+            		<td class="cardKeyName">Completion Date</td>
+            		<td>{{ jiraCard.completedDate }}</td>            	
+            		<td class="cardKeyName">Story Points</td>
+            		<td>{{ jiraCard.storyPoints }}</td>            	
+            	</tr>
+            	<tr>
+            		<td class="cardKeyName">Type</td>
+            		<td>{{ jiraCard.type }}</td>            	
+            		<td class="cardKeyName">Status</td>
+            		<td>{{ jiraCard.status }}</td>            	
+            	</tr>
+            </table>
+            <div class="bottomDivider">&nbsp</div>
+         </div>		
+	</div>
+
+	<script>
+		var jiraModule = angular.module("jiraModule", [])
+		jiraModule.controller("JiraController", function($scope, $http) {
+		$scope.appObj = {};
+		$scope.appObj.title = "JIRA Card Details";
+
+		$http.get('jiraoutput.json').success(function(data) {
+		   $scope.appObj.jiraCardArray = angular.fromJson(data);
+		});
+	});
+	</script>
+</body>
+</html>

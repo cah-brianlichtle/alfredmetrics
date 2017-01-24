@@ -48,7 +48,7 @@ Cardinal.Alfred.Metrics = function () {
 
   function getIssueInfo(issueKeys) {
     console.log('Creating output file...');
-    fs.writeFileSync('DisplayNamesByCardNumber.txt', '[\n');
+    fs.writeFileSync('DisplayNamesByCardNumber.json', '[\n');
 
     console.log('Number of issues: ' + issueKeys.length);
     console.log('Retrieving history on each issue...');
@@ -86,7 +86,7 @@ Cardinal.Alfred.Metrics = function () {
       issueInfo.storyPoints = getStoryPoints(history);
       issueInfo.type = data.fields.issuetype.name;
 
-      fs.appendFileSync('DisplayNamesByCardNumber.txt', seperator + JSON.stringify(issueInfo));
+      fs.appendFileSync('DisplayNamesByCardNumber.json', seperator + JSON.stringify(issueInfo));
 
       if (!seperator) {
         seperator = ",\n";
@@ -155,7 +155,7 @@ Cardinal.Alfred.Metrics = function () {
 
   function issueQueueDrain() {
     console.log('All issues have been processed...');
-    fs.appendFileSync('DisplayNamesByCardNumber.txt', ']');
+    fs.appendFileSync('DisplayNamesByCardNumber.json', ']');
   }
 
   return {
