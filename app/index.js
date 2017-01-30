@@ -81,6 +81,11 @@ Cardinal.Alfred.Metrics = function () {
             pair = data.fields.customfield_11404.displayName;
         }
 
+        if (pair == null || pair == '') {
+            pair = 'NONE';
+        }
+
+
       issueInfo.developerPair = pair;
       issueInfo.completedDate = getDate(data.fields.resolutiondate);
       issueInfo.storyPoints = getStoryPoints(history);
