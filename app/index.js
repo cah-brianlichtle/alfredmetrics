@@ -12,8 +12,8 @@ Cardinal.Alfred.Metrics = function () {
   var allTheIssues = [];
   var seperator = "";
 
-  client.registerMethod('getNumberOfIssues', 'https://cardinalhealth.atlassian.net/rest/api/2/search?jql=project=ALF%20AND%20resolution%20=%20Done%20AND%20statusCategory%20=%20Done%20AND%20type%20!=%20Spike&maxResults=0', 'GET');
-  client.registerMethod('getAllIssues', 'https://cardinalhealth.atlassian.net/rest/api/2/search?jql=project=ALF%20AND%20resolution%20=%20Done%20AND%20statusCategory%20=%20Done%20AND%20type%20!=%20Spike&maxResults=${maxResults}&startAt=${startAt}', 'GET');
+  client.registerMethod('getNumberOfIssues', 'https://cardinalhealth.atlassian.net/rest/api/2/search?jql=project=ALF%20AND%20resolution%20=%20Done%20AND%20statusCategory%20=%20Done%20AND%20type%20!=%20Spike%20AND%20type%20!=%20Chore&maxResults=0', 'GET');
+  client.registerMethod('getAllIssues', 'https://cardinalhealth.atlassian.net/rest/api/2/search?jql=project=ALF%20AND%20resolution%20=%20Done%20AND%20statusCategory%20=%20Done%20AND%20type%20!=%20Spike%20AND%20type%20!=%20Chore&maxResults=${maxResults}&startAt=${startAt}', 'GET');
   client.registerMethod('getIssueInfo', 'https://cardinalhealth.atlassian.net/rest/api/latest/issue/${issueId}?expand=changelog', 'GET');
 
   function getAllIssues() {
