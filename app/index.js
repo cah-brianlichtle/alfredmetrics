@@ -11,12 +11,16 @@ Cardinal.Alfred.Metrics = function () {
   var client = new restClient({user: login.username, password: login.password});
   var allTheIssues = [];
   var seperator = "";
+  var minSprint;
+  var maxSprint;
 
   client.registerMethod('getNumberOfIssues', 'https://cardinalhealth.atlassian.net/rest/api/2/search?jql=project=ALF%20AND%20resolution%20=%20Done%20AND%20statusCategory%20=%20Done%20AND%20type%20!=%20Spike%20AND%20type%20!=%20Chore&maxResults=0', 'GET');
   client.registerMethod('getAllIssues', 'https://cardinalhealth.atlassian.net/rest/api/2/search?jql=project=ALF%20AND%20resolution%20=%20Done%20AND%20statusCategory%20=%20Done%20AND%20type%20!=%20Spike%20AND%20type%20!=%20Chore&maxResults=${maxResults}&startAt=${startAt}', 'GET');
   client.registerMethod('getIssueInfo', 'https://cardinalhealth.atlassian.net/rest/api/latest/issue/${issueId}?expand=changelog', 'GET');
 
   function getAllIssues() {
+      parseCommandLineArgs();
+
     client.methods.getNumberOfIssues(function (data) {
       var args = {
         path: {
@@ -27,6 +31,18 @@ Cardinal.Alfred.Metrics = function () {
 
       getMaxIssues(args);
     });
+  }
+
+  function parseCommandLineArgs() {
+      var args = process.argv;
+
+      _.each(args, function(arg) {
+          if (arg.startsWith('minSprint')) {
+              minSprint = arg.split('=')[1];
+          } else if (arg.startsWith('maxSprint')) {
+              maxSprint = arg.split('=')[1];
+          }
+      });
   }
 
   function getMaxIssues(args, issues) {
@@ -92,17 +108,50 @@ Cardinal.Alfred.Metrics = function () {
       issueInfo.sprint = getSprintElement(history, data);
       issueInfo.type = data.fields.issuetype.name;
 
-      fs.appendFileSync('DisplayNamesByCardNumber.json', seperator + JSON.stringify(issueInfo));
+      if (isValidSprintToReport(issueInfo.sprint)) {
 
-      if (!seperator) {
-        seperator = ",\n";
+          fs.appendFileSync('DisplayNamesByCardNumber.json', seperator + JSON.stringify(issueInfo));
+
+          if (!seperator) {
+              seperator = ",\n";
+          }
+
+          // TODO: Add all the issues to one array for later use
+          allTheIssues.push(data);
       }
 
-      // TODO: Add all the issues to one array for later use
-      allTheIssues.push(data);
       console.log('Issue ' + issueInfo.key + ' has been processed');
       callback();
     });
+  }
+
+  function isValidSprintToReport(sprint) {
+      if (sprint) {
+          var sprintArray = sprint.split(', ');
+          var completionSprint;
+          if (sprintArray.length > 1) {
+              sprintArray = sprintArray.sort();
+              completionSprint = sprintArray[sprintArray.length - 1];
+
+          } else {
+              completionSprint = sprintArray[0];
+          }
+
+          var isEqualToOrBeforeMax = true;
+          var isEqualToOrAfterMin = true;
+
+          if (minSprint) {
+              isEqualToOrAfterMin = (completionSprint >= minSprint)
+          }
+
+          if (maxSprint) {
+              isEqualToOrBeforeMax = (completionSprint <= maxSprint)
+          }
+
+          return isEqualToOrAfterMin && isEqualToOrBeforeMax;
+      } else {
+          return true;
+      }
   }
 
   function getDate(inDate) {
@@ -164,7 +213,7 @@ Cardinal.Alfred.Metrics = function () {
         }
 
         if (sprint) {
-            sprint = sprint.replace(/Muppets /g, "").replace("Alfred Device ","");
+            sprint = sprint.replace(/Muppets Sprint /g, "").replace("Alfred Device Sprint ","");
         }
 
         return sprint;

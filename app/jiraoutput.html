@@ -56,7 +56,7 @@
 		<h1 class="title">{{ appObj.title }}</h1>
 
 	     <div ng-repeat='jiraCard in appObj.jiraCardArray'> <!-- Copy HTML inside div once for every element in array making available a property named item -->
-            <div class="cardKeyName">{{ jiraCard.key }} - {{ jiraCard.sprint }}</div>
+            <div class="cardKeyName">{{ jiraCard.key }} - Sprint(s) {{ jiraCard.sprint }}</div>
             <div class="summary">{{ jiraCard.summary }}</div>
             <table>
             	<tr>
