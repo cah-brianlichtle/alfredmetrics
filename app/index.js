@@ -89,7 +89,7 @@ Cardinal.Alfred.Metrics = function () {
       issueInfo.developerPair = pair;
       issueInfo.completedDate = getDate(data.fields.resolutiondate);
       issueInfo.storyPoints = getStoryPoints(history);
-      issueInfo.sprint = getSprintElement(history);
+      issueInfo.sprint = getSprintElement(history, data);
       issueInfo.type = data.fields.issuetype.name;
 
       fs.appendFileSync('DisplayNamesByCardNumber.json', seperator + JSON.stringify(issueInfo));
@@ -134,7 +134,7 @@ Cardinal.Alfred.Metrics = function () {
         return _.first(developerElements);
     }
 
-    function getSprintElement(history) {
+    function getSprintElement(history, data) {
         var sprints = [];
         _.each(history, function(record){
             var structure = _.where(record.items, {field: "Sprint"});
@@ -147,6 +147,22 @@ Cardinal.Alfred.Metrics = function () {
         });
 
         var sprint = _.last(sprints);
+        if (!sprint) {
+            var sprintArray = data.fields.customfield_10007;
+            if (sprintArray) {
+                var sprintObject = sprintArray[0];
+                if (sprintObject) {
+                    var elementsArray = sprintObject.split(',');
+
+                    _.each(elementsArray, function (record) {
+                        if (record && record.startsWith('name=')) {
+                            sprint = record.replace('name=', '');
+                        }
+                    })
+                }
+            }
+        }
+
         if (sprint) {
             sprint = sprint.replace(/Muppets /g, "").replace("Alfred Device ","");
         }
