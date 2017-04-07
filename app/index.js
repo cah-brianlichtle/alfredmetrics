@@ -148,7 +148,7 @@ Cardinal.Alfred.Metrics = function () {
 
         var sprint = _.last(sprints);
         if (sprint) {
-            sprint = sprint.replace("Muppets ", "");
+            sprint = sprint.replace(/Muppets /g, "").replace("Alfred Device ","");
         }
 
         return sprint;
