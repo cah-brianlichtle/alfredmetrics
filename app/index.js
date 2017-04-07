@@ -89,6 +89,7 @@ Cardinal.Alfred.Metrics = function () {
       issueInfo.developerPair = pair;
       issueInfo.completedDate = getDate(data.fields.resolutiondate);
       issueInfo.storyPoints = getStoryPoints(history);
+      issueInfo.sprint = getSprintElement(history);
       issueInfo.type = data.fields.issuetype.name;
 
       fs.appendFileSync('DisplayNamesByCardNumber.json', seperator + JSON.stringify(issueInfo));
@@ -131,6 +132,26 @@ Cardinal.Alfred.Metrics = function () {
             }
         });
         return _.first(developerElements);
+    }
+
+    function getSprintElement(history) {
+        var sprints = [];
+        _.each(history, function(record){
+            var structure = _.where(record.items, {field: "Sprint"});
+            if (structure.length > 0) {
+                var item = structure[0];
+                if (item != null) {
+                    sprints.push(item.toString);
+                }
+            }
+        });
+
+        var sprint = _.last(sprints);
+        if (sprint) {
+            sprint = sprint.replace("Muppets ", "");
+        }
+
+        return sprint;
     }
 
     function getStoryPoints(history) {
