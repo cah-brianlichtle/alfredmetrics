@@ -105,10 +105,18 @@ Cardinal.Alfred.Metrics = function () {
       issueInfo.developerPair = pair;
       issueInfo.completedDate = getDate(data.fields.resolutiondate);
       issueInfo.storyPoints = getStoryPoints(history);
-      issueInfo.sprint = getSprintElement(history, data);
+
+      var sprints = getSprintElement(history, data);
+      var sprintTitle = 'Sprint ';
+
+      if (sprints && ~sprints.indexOf(', ')) {
+          sprintTitle =  "Sprints ";
+      }
+
+      issueInfo.sprint = sprintTitle + sprints;
       issueInfo.type = data.fields.issuetype.name;
 
-      if (isValidSprintToReport(issueInfo.sprint)) {
+      if (isValidSprintToReport(sprints)) {
 
           fs.appendFileSync('DisplayNamesByCardNumber.json', seperator + JSON.stringify(issueInfo));
 
