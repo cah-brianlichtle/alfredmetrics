@@ -105,18 +105,11 @@ Cardinal.Alfred.Metrics = function () {
       issueInfo.developerPair = pair;
       issueInfo.completedDate = getDate(data.fields.resolutiondate);
       issueInfo.storyPoints = getStoryPoints(history);
-
-      var sprints = getSprintElement(history, data);
-      var sprintTitle = 'Sprint ';
-
-      if (sprints && ~sprints.indexOf(', ')) {
-          sprintTitle =  "Sprints ";
-      }
-
-      issueInfo.sprint = sprintTitle + sprints;
+      var sprint = getSprintElement(history, data);
+      issueInfo.sprint = sprint;
       issueInfo.type = data.fields.issuetype.name;
 
-      if (isValidSprintToReport(sprints)) {
+      if (isValidSprintToReport(sprint)) {
 
           fs.appendFileSync('DisplayNamesByCardNumber.json', seperator + JSON.stringify(issueInfo));
 
@@ -222,6 +215,11 @@ Cardinal.Alfred.Metrics = function () {
 
         if (sprint) {
             sprint = sprint.replace(/Muppets Sprint /g, "").replace("Alfred Device Sprint ","");
+        }
+
+        if (sprint && ~sprint.indexOf(', ')) {
+            var sprintArray  = sprint.split(', ');
+            sprint = sprintArray[sprintArray.length - 1];
         }
 
         return sprint;

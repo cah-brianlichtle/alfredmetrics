@@ -91,15 +91,8 @@
 		$http.get('DisplayNamesByCardNumber.json').success(function(data) {
        var data = angular.fromJson(data);
        angular.forEach(data, function (item) {
-        var itemData = item.sprint;
-        itemData = itemData.replace('Sprints ', '').replace('Sprint ', '');
-
-        if (itemData.indexOf(', ') !== -1) {
-          var itemDataParts = itemData.split(', ');
-          itemData = itemDataParts[itemDataParts.length - 1];
-        }
-
-        item.sprint = parseFloat(itemData);
+        var sprint = item.sprint;
+        item.sprint = parseFloat(sprint);
        });
 
 		   $scope.appObj.jiraCardArray = data;
