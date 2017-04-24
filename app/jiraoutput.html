@@ -55,8 +55,8 @@
 	<div ng-controller="JiraController" >
 		<h1 class="title">{{ appObj.title }}</h1>
 
-	     <div ng-repeat='jiraCard in appObj.jiraCardArray'> <!-- Copy HTML inside div once for every element in array making available a property named item -->
-            <div class="cardKeyName">{{ jiraCard.key }} - {{ jiraCard.sprint }}</div>
+	     <div ng-repeat='jiraCard in appObj.jiraCardArray | orderBy:"sprint"'> <!-- Copy HTML inside div once for every element in array making available a property named item -->
+            <div class="cardKeyName">{{ jiraCard.key }} - Sprint Completed: {{ jiraCard.sprint }}</div>
             <div class="summary">{{ jiraCard.summary }}</div>
             <table>
             	<tr>
@@ -89,7 +89,20 @@
 		$scope.appObj.title = "JIRA Card Details";
 
 		$http.get('DisplayNamesByCardNumber.json').success(function(data) {
-		   $scope.appObj.jiraCardArray = angular.fromJson(data);
+       var data = angular.fromJson(data);
+       angular.forEach(data, function (item) {
+        var itemData = item.sprint;
+        itemData = itemData.replace('Sprints ', '').replace('Sprint ', '');
+
+        if (itemData.indexOf(', ') !== -1) {
+          var itemDataParts = itemData.split(', ');
+          itemData = itemDataParts[itemDataParts.length - 1];
+        }
+
+        item.sprint = parseFloat(itemData);
+       });
+
+		   $scope.appObj.jiraCardArray = data;
 		});
 	});
 	</script>
