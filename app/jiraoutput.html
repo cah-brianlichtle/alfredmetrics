@@ -83,18 +83,21 @@
 	</div>
 
 	<script>
+		var missingSprints = {"ALF-1086":38,"ALF-994":35,"ALF-1680":49,"ALF-24":1,"ALF-1140":38, "ALF-1144":38};
 		var jiraModule = angular.module("jiraModule", [])
 		jiraModule.controller("JiraController", function($scope, $http) {
 		$scope.appObj = {};
 		$scope.appObj.title = "JIRA Card Details";
 
 		$http.get('DisplayNamesByCardNumber.json').success(function(data) {
-       var data = angular.fromJson(data);
-       angular.forEach(data, function (item) {
-        var sprint = item.sprint;
-        item.sprint = parseFloat(sprint);
-       });
-
+		   var data = angular.fromJson(data);
+		   angular.forEach(data, function (item) {
+				var sprint = item.sprint;
+				item.sprint = parseFloat(sprint);
+				if (isNaN(item.sprint)) {
+					item.sprint=missingSprints[item.key];
+				}
+		   });
 		   $scope.appObj.jiraCardArray = data;
 		});
 	});
